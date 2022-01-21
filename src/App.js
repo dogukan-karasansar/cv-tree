@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import { animated, config, useSpring } from "react-spring";
+
+import ImageShadow from "react-image-shadow";
+import "react-image-shadow/assets/index.css";
 
 import { styled } from "@mui/material/styles";
 import LinearProgress, {
@@ -8,8 +11,16 @@ import LinearProgress, {
 } from "@mui/material/LinearProgress";
 
 import "./App.css";
+import getAbout from "./services/AboutServices";
 
 function App() {
+  const [about, setAbout] = useState({});
+
+  useEffect(() => {
+    getAbout(setAbout);
+  }, []);
+
+  //statusbar
   const BorderLinearProgress = styled(LinearProgress)(
     ({ theme, backgroundColor }) => ({
       height: 10,
@@ -36,6 +47,7 @@ function App() {
     config: config.molasses,
     onRest: () => set(!flip),
   });
+
   return (
     <Parallax pages={3} style={{ top: "0", left: "0" }}>
       <ParallaxLayer
@@ -56,21 +68,52 @@ function App() {
         offset={1}
         speed={0.5}
         style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <h2 className="header-text">
+          {about.title ? about.title : "Doğukan Karasansar Kimdir?"}
+        </h2>
+
+        <ImageShadow
+          shadowBlur={15}
+          shadowHover={true}
+          src={
+            about.image
+              ? about.image
+              : "https://media-exp1.licdn.com/dms/image/C4E03AQFL53I4RJrkKg/profile-displayphoto-shrink_100_100/0/1640802307804?e=1648080000&v=beta&t=n4QpoxwW481RuyXmsTyxnfOZ8Ah7KtzrhP9BbbewoJ8"
+          }
+          className="my-image"
+          alt={about.tag ? about.tag : "Developer Doğukan Karasansar"}
+        />
+
+        <p className="description">
+          {about.description
+            ? about.description
+            : "Merhaba, Ben Doğukan Karasansar 19 yaşındayım,  Web Tasarım ve Mobil Uygulama Geliştirmekle İlgileniyorum. Laravel, Vue, react vb.. web teknolojilerini kullanıyorum Mobil geliştirmeler için Flutter ve React Native kullanmaktayım."}
+        </p>
+      </ParallaxLayer>
+
+      <ParallaxLayer
+        offset={2}
+        speed={0.5}
+        style={{
           backgroundColor: "#041562",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           color: "white",
-          flexDirection: "column",
-          height: "100vh",
         }}
       >
-        <animated.h1
-          className={"experience-text"}
-          style={(props)}
-        >
-          EXPERIENCE
-        </animated.h1>
+        <div style={{ padding: 10 }}>
+          <animated.h1 className={"experience-text"} style={props}>
+            EXPERIENCE
+          </animated.h1>
+        </div>
+
         {/* Laravel */}
         <div style={{ width: "50%", margin: 10 }}>
           <span>Laravel</span>
@@ -142,19 +185,6 @@ function App() {
             backgroundColor={"#406882"}
           />
         </div>
-      </ParallaxLayer>
-      <ParallaxLayer
-        offset={2}
-        speed={0.5}
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <animated.h1 className={"header-text"} style={props}>
-          test
-        </animated.h1>
       </ParallaxLayer>
     </Parallax>
   );
